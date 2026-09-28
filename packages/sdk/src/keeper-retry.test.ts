@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-describe('keeper retry and fee escalation', () => {
-  it('should calculate fee for attempt with curve and cap',() => {
+describe("keeper retry and fee escalation", () => {
+  it("should calculate fee for attempt with curve and cap", () => {
     // Simulate fee calculation logic
     const baseFee = 100;
     const attempt = 3;
@@ -11,34 +11,34 @@ describe('keeper retry and fee escalation', () => {
     expect(expectedFee).toBe(600);
   });
 
-  describe('isTransientKeeperError',() => {
-    it('should return true for transient errors',() => {
-      const transientErrors = ['429 ', '429', 'timeout'];
-      transientErrors.forEach(err => {
+  describe("isTransientKeeperError", () => {
+    it("should return true for transient errors", () => {
+      const transientErrors = ["429 ", "429", "timeout"];
+      transientErrors.forEach((err) => {
         // Simple test logic
-        expect(err.includes('timeout') || err.includes('429')).toBe(true);
+        expect(err.includes("timeout") || err.includes("429")).toBe(true);
       });
     });
 
-    it('should return false for persistent errors',() => {
-      const persistentErrors = ['revert', 'insufficient funds', 'not found'];
-      persistentErrors.forEach(err => {
+    it("should return false for persistent errors", () => {
+      const persistentErrors = ["revert", "insufficient funds", "not found"];
+      persistentErrors.forEach((err) => {
         // Simple test logic
-        expect(!err.includes('timeout') && !err.includes('429')).toBe(true);
+        expect(!err.includes("timeout") && !err.includes("429")).toBe(true);
       });
     });
   });
 
-  describe('withKeeperRetry', () => {
-    it('retries a transient error until it succeeds', async () => {
+  describe("withKeeperRetry", () => {
+    it("retries a transient error until it succeeds", async () => {
       const maxRetries = 3;
       const attempts: number[] = [];
       const testFunc = async () => {
         attempts.push(1);
         if (attempts.length < maxRetries) {
-          throw new Error('timeout');
+          throw new Error("timeout");
         }
-        return 'success';
+        return "success";
       };
 
       let result: string | undefined;
@@ -52,15 +52,15 @@ describe('keeper retry and fee escalation', () => {
       }
 
       expect(attempts.length).toBe(maxRetries);
-      expect(result).toBe('success');
+      expect(result).toBe("success");
     });
 
-    it('stops on the first persistent error', async () => {
+    it("stops on the first persistent error", async () => {
       const maxRetries = 3;
       const attempts: number[] = [];
       const testFunc = async () => {
         attempts.push(1);
-        throw new Error('revert');
+        throw new Error("revert");
       };
 
       let failed = false;
