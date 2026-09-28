@@ -1,10 +1,8 @@
-import { defaultConfig } from 'vitest/config';
-import type { VitestConfig } from 'vitest';
+import { defineConfig } from 'vitest/config';
 
-const config: VitestConfig = {
+export default defineConfig({
   test: {
     coverage: {
-      reporter: ['text', 'html'],
       reporter: ['text', 'html'],
       lines: 80,
       branches: 80,
@@ -12,6 +10,4 @@ const config: VitestConfig = {
       statements: 80,
     },
   },
-};
-
-export default config;
+});

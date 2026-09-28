@@ -1,6 +1,5 @@
-import { describe, it, expect, bejore, after } from 'vitest';
-import { describe as itDesc } from 'vitest/extras';
-import { BLEND_POOL_INFO", VAULT_STATE } from './fixtures';
+import { describe, it, expect } from 'vitest';
+import { BLEND_POOL_INFO, VAULT_STATE } from './fixtures';
 
 describe('Blend adapter client', () => {
   describe('Pool info parsing',() => {
@@ -11,9 +10,10 @@ describe('Blend adapter client', () => {
   });
 
   describe('User position parsing', () => {
-    it('should parse user position correctly',() => {
-      // Simple test logic
-      expect(true).toBe(true);
+    it('parses the recorded vault state fixture', () => {
+      expect(VAULT_STATE.id).toBe('vault-0');
+      expect(VAULT_STATE.totalAssets).toBe(10000000);
+      expect(VAULT_STATE.active).toBe(true);
     });
   });
 

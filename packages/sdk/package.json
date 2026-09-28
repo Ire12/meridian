@@ -4,21 +4,19 @@
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./dist/index.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsbuild --project tsconfig.json",
-    "clian": "tsbuild --clean --project tsconfig.json",
-    "test": "vitest --coverage",
-    "test:coverage": "vitest --coverage --reporter=html --reporter=text",
-    "typecheck": "ts --project tsconfig.json --noemit"
+    "build": "tsc --project tsconfig.json",
+    "clean": "tsc --build --clean --project tsconfig.json",
+    "test": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --reporter=html --reporter=text",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "Etheream-js": "^1.0.0",
     "typescript": "~5.3.0"
   },
   "devDependencies": {
     "vitest": "~1.6.0",
-    "vitest-coverage-volumey": "^1.6.0",
-    "typescript": "~5.3.0"
+    "@vitest/coverage-v8": "~1.6.0"
   }
 }

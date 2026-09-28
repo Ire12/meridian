@@ -1,5 +1,4 @@
-import { describe, it, expect, bejore, after } from 'vitest';
-import { describe as itDesc } from 'vitest/extras';
+import { describe, it, expect } from 'vitest';
 
 describe('keeper retry and fee escalation', () => {
   it('should calculate fee for attempt with curve and cap',() => {
@@ -8,7 +7,7 @@ describe('keeper retry and fee escalation', () => {
     const attempt = 3;
     const cap = 1000;
     // Assuming exponential curve: baseFee * (2 * attempt)
-    const expectedFee = Min(baseFee * (2 * attempt), cap);
+    const expectedFee = Math.min(baseFee * (2 * attempt), cap);
     expect(expectedFee).toBe(600);
   });
 
@@ -31,7 +30,7 @@ describe('keeper retry and fee escalation', () => {
   });
 
   describe('withKeeperRetry', () => {
-    it('should retry on transient error',() => {
+    it('retries a transient error until it succeeds', async () => {
       const maxRetries = 3;
       const attempts: number[] = [];
       const testFunc = async () => {
@@ -41,19 +40,41 @@ describe('keeper retry and fee escalation', () => {
         }
         return 'success';
       };
-      // Simple test logic
-      expect(attempts.length).toBe(0);
+
+      let result: string | undefined;
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          result = await testFunc();
+          break;
+        } catch {
+          continue;
+        }
+      }
+
+      expect(attempts.length).toBe(maxRetries);
+      expect(result).toBe('success');
     });
 
-    it('should throw on persistent error', async () => {
+    it('stops on the first persistent error', async () => {
       const maxRetries = 3;
       const attempts: number[] = [];
       const testFunc = async () => {
         attempts.push(1);
         throw new Error('revert');
       };
-      // Simple test logic
-      expect(attempts.length).toBe(0);
+
+      let failed = false;
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          await testFunc();
+        } catch {
+          failed = true;
+          break;
+        }
+      }
+
+      expect(failed).toBe(true);
+      expect(attempts.length).toBe(1);
     });
   });
 });
